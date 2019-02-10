@@ -13,15 +13,19 @@ if [ -z "$1" ]; then
   echo "'3' Change EXIF info for lens"
   echo "'4' Remove data from EXIF tag 'Software'"
   echo "'5' Export previews from RAW"
-  echo "'6' Copy EXIF to jpgs"
+  echo "'6' Copy EXIF to .jpg"
+  echo "'7' Orphan text_files and .jpg cleanup"
+  echo "'8' Delete .jpg with RAW parent"
   echo "'0' All together"
   exit 0
 fi
 
 # If parameter 2 passed to the script and override the variable DIRECTORY ------
-if [ -z "$2" ]; then
+if [ ! "$2" == "" ]; then
   DIRECTORY=$2
 fi
+
+echo "Working directory:" $DIRECTORY
 
 function rename_files {
   echo "Rename files bases on the capture time --------------------------------"
