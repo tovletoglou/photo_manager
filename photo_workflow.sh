@@ -220,14 +220,84 @@ function exif_to_jpg {
   done
 }
 
+function orphan_cleanup {
+  # Create deleted_files directory
+  if [ ! -d ./orfan_deleted_files ]; then
+    mkdir ./orfan_deleted_files
+  fi
+
+  # -type f    Find only files
+  # -print0    Always print the exact filename, unchanged, even if the output is going to a terminal
+  find "$DIRECTORY" -type f -print0 |
+  # IFS           Internal field separator. It is used by the shell to determine how to do word splitting
+  # read          Read a line from the standard input and split it into fields.
+  # -r            do not allow backslashes to escape any characters
+  # -d delim      continue until the first character of DELIM is read, rather than newline
+  while IFS= read -rd '' file; do
+
+    # Find filetype
+    filetype=$(file -i "$file")
+
+    # Find text files
+    if [[ $(echo "$filetype" | grep ': text/plain; charset=us-ascii') ]]; then
+      fileraw=$( echo $file | sed 's/...$/cr2/')
+      if [ ! -f "$fileraw" ]; then
+        echo "RAW file not found! $fileraw" 2>&1 | tee -a ./orfan_deleted_files/orfan_deleted_files.log
+        mv "$file" ./orfan_deleted_files
+      fi
+    fi
+
+    # # Find jpg images
+    if [[ $(echo "$filetype" | grep ': image/jpeg; charset=binary') ]]; then
+      fileraw=$( echo $file | sed 's/...$/cr2/')
+      if [ ! -f "$fileraw" ]; then
+        echo "RAW file not found! $fileraw" 2>&1 | tee -a ./orfan_deleted_files/orfan_deleted_files.log
+        mv "$file" ./orfan_deleted_files
+      fi
+    fi
+
+  done
+}
+
+function delete_jpg_with_parent {
+  # Create deleted_files directory
+  if [ ! -d ./delete_jpg_with_parent ]; then
+    mkdir ./delete_jpg_with_parent
+  fi
+  # -type f    Find only files
+  # -print0    Always print the exact filename, unchanged, even if the output is going to a terminal
+  find "$DIRECTORY" -type f -print0 |
+  # IFS           Internal field separator. It is used by the shell to determine how to do word splitting
+  # read          Read a line from the standard input and split it into fields.
+  # -r            do not allow backslashes to escape any characters
+  # -d delim      continue until the first character of DELIM is read, rather than newline
+  while IFS= read -rd '' file; do
+
+    # Find filetype
+    filetype=$(file -i "$file")
+
+    # Find text files
+    if [[ $(echo "$filetype" | grep ': image/jpeg; charset=binary') ]]; then
+      fileraw=$( echo $file | sed 's/...$/cr2/')
+      if [ -f "$fileraw" ]; then
+        echo "Parent RAW file found, deleting jpg: $fileraw" 2>&1 | tee -a ./delete_jpg_with_parent/delete_jpg_with_parent.log
+        mv "$file" ./delete_jpg_with_parent
+      fi
+    fi
+
+  done
+}
+
 function all_together {
   echo "Run all functions together --------------------------------------------"
   rename_files
   move_files
-  export_previews
-  exif_to_jpg
+  exif_lens
   remove_exif_software
-  all_together
+  # export_previews
+  exif_to_jpg
+  orphan_cleanup
+  # delete_jpg_with_parent
 }
 
 # Menu -------------------------------------------------------------------------
@@ -239,5 +309,7 @@ in
   4) remove_exif_software ;;
   5) export_previews ;;
   6) exif_to_jpg ;;
+  7) orphan_cleanup ;;
+  8) delete_jpg_with_parent ;;
   0) all_together ;;
 esac
