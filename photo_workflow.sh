@@ -58,11 +58,12 @@ function rename_files {
   exiftool -r -P -ext cr2 -tagsfromfile @ -d '%Y%m%d_%H%M%S' -srcfile %d%f.psd '-FileName<${CreateDate}_${FileNumber}%-c.xmp' "$DIRECTORY"
   echo "Change name of the main '*.cr2' photo"
   exiftool -r -P -ext cr2 -tagsfromfile @ -d '%Y%m%d_%H%M%S' -srcfile %d%f.cr2 '-FileName<${CreateDate}_${FileNumber}%-c.%le' "$DIRECTORY"
-  # TODO: rename videos
-  # echo "Change name of the main '*.mov' videos"
-  # exiftool -r -P -ext mov -tagsfromfile @ -d '%Y%m%d_%H%M%S' -srcfile %d%f.mov '-FileName<${CreateDate}_${FileNumber}%-c.%le' "$DIRECTORY"
+  echo "Change name of the main '*.mov' videos"
+  exiftool -r -P -ext mov -tagsfromfile @ -d '%Y%m%d_%H%M%S' -srcfile %d%f.mov '-FileName<${CreateDate}%-c.%le' "$DIRECTORY"
 }
 
+# TODO: .on1 files does not move
+# TODO: On the second run it creates new sub-sub directories
 function move_files {
   echo "Move files to directories based on day --------------------------------"
   # NOTICE: It will move all the files that contain EXIF information for CreateDate,
