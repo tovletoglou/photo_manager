@@ -1,8 +1,8 @@
 #!/bin/bash
 
 # Define the working directory
-# WARNING: The path must contain spaces
-DIRECTORY="/g/2019/2019-01-02_Melnik"
+# WARNING: The path must not contain spaces, /g/2019/2019-01-02_Vacations
+DIRECTORY="."
 
 
 # Check if parameter 1 passed to the script and print the menu -----------------
