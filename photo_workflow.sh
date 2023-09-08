@@ -4,8 +4,8 @@
 # WARNING: The path must not contain spaces: /home/USERNAME/Photos/2019-01-02_Vacations
 # mount an SMB share: sudo mount -t cifs -o username=SBM_USERNAME,gid=LOCAL_GROUP_ID,uid=LOCAL_USER_ID //192.168.200.2/DIRECTORY /mnt/DIRECTORY
 # example:            sudo mount -t cifs -o username=tolis,gid=1000,uid=1000 //192.168.200.2/Photos /mnt/Photos
-# DIRECTORY="/mnt/c/Users/tovle/Desktop/100CANON"
-DIRECTORY="/mnt/photos/2021/TO_ORDER"
+DIRECTORY="/mnt/c/Users/tovle/Desktop/100CANON"
+# DIRECTORY="/mnt/photos/2021/TO_ORDER"
 
 if [ ! -d $DIRECTORY ]; then
   echo "No directory" $DIRECTORY
